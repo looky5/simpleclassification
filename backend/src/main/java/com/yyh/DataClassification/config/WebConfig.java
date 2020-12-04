@@ -12,13 +12,14 @@ public class WebConfig implements WebMvcConfigurer {
 	public void addCorsMappings(CorsRegistry registry) {
 		WebMvcConfigurer.super.addCorsMappings(registry);
 		registry.addMapping("/**")
-				.allowedOrigins("*");
+				.allowedOrigins("http://localhost:8080")
+				.allowedMethods("*");
 	}
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		WebMvcConfigurer.super.addResourceHandlers(registry);
 		registry.addResourceHandler("/files/**")
-				.addResourceLocations("file:///C:/DataClassification/files/");
+				.addResourceLocations("file:///C:\\Users\\Yun_YoungHyun\\dananuo/");
 	}
 }

@@ -6,6 +6,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +21,7 @@ import lombok.NonNull;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Data
 @Builder
+@DynamicInsert
 public class UploadFile {
 	
 	@Id
@@ -25,19 +29,20 @@ public class UploadFile {
 	@Column
 	private int id;
 	
-	@Column
+	@Column(name = "file_name")
 	@NonNull
-	private String file_name;
+	private String fileName;
 	
-	@Column
+	@Column(name = "file_uri")
 	@NonNull
-	private String file_uri;
+	private String fileUri;
 	
-	@Column
+	@Column(name = "file_date")
 	@NonNull
-	private String file_date;
+	private String fileDate;
 	
-	@Column
-	@NonNull
-	private String file_status;
+	@Column(name = "file_status")
+	private String fileStatus;
+	
+	
 }

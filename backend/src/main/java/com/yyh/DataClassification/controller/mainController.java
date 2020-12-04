@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,23 +50,36 @@ public class mainController {
 		ResponseEntity response = null;
 		final BasicResponse result = new BasicResponse();
 		UploadFile file_info = fileservice.storeFile(file);
-		logger.info(file_info.getFile_name() + "is uploaded.");
-		result.status = true;
-		result.data = "success";
-		result.object = file_info;
-		response = new ResponseEntity<>(result, HttpStatus.OK);
+		if(file_info == null) {
+			logger.error("file already exist!");
+			result.status = false;
+			result.data = "fail";
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			logger.info(file_info.getFileName() + "is uploaded.");
+			result.status = true;
+			result.data = "success";
+			result.object = file_info;
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+		}
 		return response;
+		
 	}
 	
-//	@ApiOperation("파일을 삭제한다.")
-//	@DeleteMapping("/file")
-//	public ResponseEntity<?> deleteFile(@RequestParam("id") int id) throws Exception {
-//		ResponseEntity response = null;
-//		final BasicResponse result = new BasicResponse();
-//		fileservice.removeFile(id);
-//		result.status = true;
-//		result.data = "success";
-//		response = new ResponseEntity<>(result, HttpStatus.OK);
-//		return response;
-//	}
+	@ApiOperation("파일을 삭제한다.")
+	@DeleteMapping("/file/{id}")
+	public ResponseEntity<?> deleteFile(@PathVariable("id") int id) throws Exception {
+		ResponseEntity response = null;
+		final BasicResponse result = new BasicResponse();
+		if(fileservice.removeFile(id)) {
+			result.status = true;
+			result.data = "success";
+			response = new ResponseEntity<>(result, HttpStatus.OK);
+		} else {
+			result.status = false;
+			result.data = "fail";
+			response = new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		}
+		return response;
+	}
 }

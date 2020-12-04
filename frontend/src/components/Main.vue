@@ -29,14 +29,16 @@
                     <v-col> 등록 날짜 </v-col>
                     <v-col> 파일 이름 </v-col>
                     <v-col> 상태 </v-col>
+                    <v-col> 삭제 </v-col>
                 </v-row>
                 <v-row
                 class="text-center"
                 v-for="(item, index) in items"
                 :key="index">
-                    <v-col> {{ item.file_date }} </v-col>
-                    <v-col> <a href="#" @click="downloadFile(item)"> {{ item.file_name }} </a></v-col>
-                    <v-col> {{ item.file_status }} </v-col>
+                    <v-col> {{ item.fileDate }} </v-col>
+                    <v-col class="text-truncate"> <a href="#" @click="downloadFile(item)"> {{ item.fileName }} </a></v-col>
+                    <v-col> {{ item.fileStatus }} </v-col>
+                    <v-col> <a href="#" @click="deleteFile(item)">삭제</a> </v-col>
                 </v-row>
             </v-container>
         </v-container>
@@ -57,7 +59,7 @@ export default {
     },
     methods: {
         checkFile() {
-            console.dir(this.selectFile);
+            console.log(this.selectFile);
         },
         regFile() {
             this.currentFile = this.selectFile;
@@ -71,7 +73,13 @@ export default {
                 },
                 data: formData
             })
-            .then(() => {
+            .then((res) => {
+                let stat = res.data.status;
+                if(stat === false) {
+                    alert("이미 존재하는 파일입니다.");
+                } else {
+                    alert("파일이 등록되었습니다.");
+                }
                 this.$router.go();
             })
             .catch((err) => {
@@ -79,7 +87,9 @@ export default {
                 this.progress = 0;
                 this.currentFile = undefined;
             })
-            this.selectFile = undefined;
+            .finally(() => {
+                this.selectFile = undefined;
+            })
         },
         getFiles() {
             axios ({
@@ -94,7 +104,26 @@ export default {
             })
         },
         downloadFile(aFile) {
-            location.href=aFile.file_uri;
+            location.href=aFile.fileUri;
+        },
+        deleteFile(file) {
+            if(file.fileStatus === 'TODO') {
+                axios ({
+                    method: "DELETE",
+                    url: this.$baseurl + '/main/file/' + file.id,
+                })
+                .then(() => {
+                    alert("파일을 삭제하였습니다.");
+                })
+                .catch(() => {
+                    alert("파일을 삭제할 수 없습니다.");
+                })
+                .finally(() => {
+                    this.$router.go();
+                })
+            } else {
+                alert("분류중이거나 이미 완료된 파일은 삭제할 수 없습니다.")
+            }
         }
     },
     mounted() {

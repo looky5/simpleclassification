@@ -15,13 +15,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
 	/* http://localhost:8082/DataClassification/swagger-ui.html */
-    @Bean
-    public Docket api() {
-        return new Docket(DocumentationType.SWAGGER_2)
-        		.select()
-        		.apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot"))) 
-        		 
-                .paths(PathSelectors.any())
-                .build();
-   }
+	@Bean
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2).select()
+				.apis(Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot")))
+				.paths(PathSelectors.any()).build();
+	}
 }
